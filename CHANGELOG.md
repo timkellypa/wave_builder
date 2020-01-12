@@ -12,3 +12,7 @@
 ## 1.0.2
 
 - No code changes, but homepage is now reachable (so it will pass that analysis).
+
+## 1.0.3
+
+- Updated home page to github repository.
