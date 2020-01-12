@@ -8,3 +8,7 @@
 
 - Fixed a couple typos in docs, created/updated docs.
 - Allow audio properties (frequency, bit rate, and number of channels) to be passed in instead of hardcoded.
+
+## 1.0.2
+
+- No code changes, but homepage is now reachable (so it will pass that analysis).
