@@ -16,3 +16,8 @@
 ## 1.0.3
 
 - Updated home page to github repository.
+
+## 1.0.4
+
+- Optimizations to adding files.
+- Supports finding the data chunk first, to prevent repeating the iteration many times.

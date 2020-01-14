@@ -1,6 +1,6 @@
 name: wave_builder
 description: A utility for building a wave file by concatenating wave files and periods of silence.
-version: 1.0.3
+version: 1.0.4
 homepage: https://github.com/timkellypa/wave_builder
 
 environment:

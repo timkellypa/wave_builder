@@ -77,8 +77,8 @@ class WaveBuilder {
     _outputBytes.addAll(ByteUtils.numberAsByteList(0, 4, bigEndian: false));
   }
 
-  /// Append [fileContents] read as bytes to our wave file.
-  void appendFileContents(List<int> fileContents) {
+  /// Find data chunk content after <data|size> in [fileContents]
+  List<int> getDataChunk(List<int> fileContents) {
     final dataIdSequence = _utf8encoder.convert('data');
     final dataIdIndex =
         ByteUtils.findByteSequenceInList(dataIdSequence, fileContents);
@@ -88,11 +88,17 @@ class WaveBuilder {
       // Add 4 for data size
       dataStartIndex = dataIdIndex + dataIdSequence.length + 4;
     }
+    return fileContents.sublist(dataStartIndex);
+  }
 
-    _lastSampleSize = fileContents.length - dataStartIndex;
-
-    _outputBytes
-        .addAll(fileContents.getRange(dataStartIndex, fileContents.length));
+  /// Append [fileContents] read as bytes to our wave file.
+  /// If [findDataChunk] is true, searches first to find the file's data chunk.
+  /// It's recommended to call getDataChunk on the file contents you want to append first,
+  /// to prevent repeating everytime you add the same file.
+  void appendFileContents(List<int> fileContents, {bool findDataChunk = true}) {
+    var dataChunk = findDataChunk ? getDataChunk(fileContents) : fileContents;
+    _lastSampleSize = dataChunk.length;
+    _outputBytes.addAll(dataChunk);
   }
 
   /// Append [msLength] milliseconds of silence to our wave file.
