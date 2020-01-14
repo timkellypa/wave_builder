@@ -154,5 +154,19 @@ void main() {
         expect(waveBuilder.fileBytes[40], 4);
       });
     });
+
+    group('#findDataChunk', () {
+      test('it finds the data chunk (list contents after "data" + size)', () {
+        var testNewFile = [1, 1, 1];
+        testNewFile.addAll('data'.codeUnits);
+
+        // size chunk
+        testNewFile.addAll([0, 0, 0, 4]);
+
+        testNewFile.addAll([1, 2, 3, 4]);
+
+        expect(waveBuilder.getDataChunk(testNewFile), [1, 2, 3, 4]);
+      });
+    });
   });
 }
