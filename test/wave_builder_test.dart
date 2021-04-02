@@ -16,7 +16,7 @@ const int NUM_CHANNELS = 2;
 
 void main() {
   group('WaveBuilder', () {
-    WaveBuilder waveBuilder;
+    WaveBuilder? waveBuilder;
     setUp(() {
       waveBuilder = WaveBuilder();
     });
@@ -27,18 +27,18 @@ void main() {
 
     group('#constructor', () {
       test('it initializes outputBytes and initializes chunks', () {
-        expect(waveBuilder.fileBytes.length, 44);
+        expect(waveBuilder?.fileBytes.length, 44);
       });
 
       test('it adds RIFF chunk', () {
         var riff = 'RIFF'.codeUnits;
-        expect(waveBuilder.fileBytes.getRange(0, 4), riff);
+        expect(waveBuilder?.fileBytes.getRange(0, 4), riff);
         var wave = 'WAVE'.codeUnits;
 
         // do not test length here, because it is already calculated as non-zero
         // (file length minus this section)
 
-        expect(waveBuilder.fileBytes.getRange(8, 12), wave);
+        expect(waveBuilder?.fileBytes.getRange(8, 12), wave);
       });
 
       test('it adds format chunk', () {
@@ -47,33 +47,33 @@ void main() {
             bitsPerSample = BIT_RATE;
 
         var fmt = 'fmt '.codeUnits;
-        expect(waveBuilder.fileBytes.getRange(12, 16), fmt);
-        expect(waveBuilder.fileBytes.getRange(16, 20),
+        expect(waveBuilder?.fileBytes.getRange(12, 16), fmt);
+        expect(waveBuilder?.fileBytes.getRange(16, 20),
             ByteUtils.numberAsByteList(SUB_CHUNK_SIZE, 4, bigEndian: false));
 
-        expect(waveBuilder.fileBytes.getRange(20, 22),
+        expect(waveBuilder?.fileBytes.getRange(20, 22),
             ByteUtils.numberAsByteList(AUDIO_FORMAT, 2, bigEndian: false));
 
-        expect(waveBuilder.fileBytes.getRange(22, 24),
+        expect(waveBuilder?.fileBytes.getRange(22, 24),
             ByteUtils.numberAsByteList(NUM_CHANNELS, 2, bigEndian: false));
 
-        expect(waveBuilder.fileBytes.getRange(24, 28),
+        expect(waveBuilder?.fileBytes.getRange(24, 28),
             ByteUtils.numberAsByteList(FREQUENCY, 4, bigEndian: false));
 
-        expect(waveBuilder.fileBytes.getRange(28, 32),
+        expect(waveBuilder?.fileBytes.getRange(28, 32),
             ByteUtils.numberAsByteList(byteRate, 4, bigEndian: false));
 
-        expect(waveBuilder.fileBytes.getRange(32, 34),
+        expect(waveBuilder?.fileBytes.getRange(32, 34),
             ByteUtils.numberAsByteList(blockAlign, 2, bigEndian: false));
 
-        expect(waveBuilder.fileBytes.getRange(34, 36),
+        expect(waveBuilder?.fileBytes.getRange(34, 36),
             ByteUtils.numberAsByteList(bitsPerSample, 2, bigEndian: false));
       });
 
       test('it adds data chunk', () {
         var data = 'data'.codeUnits;
-        expect(waveBuilder.fileBytes.getRange(36, 40), data);
-        expect(waveBuilder.fileBytes.getRange(40, 44), [0, 0, 0, 0]);
+        expect(waveBuilder?.fileBytes.getRange(36, 40), data);
+        expect(waveBuilder?.fileBytes.getRange(40, 44), [0, 0, 0, 0]);
       });
     });
 
@@ -86,14 +86,14 @@ void main() {
         testNewFile.addAll([0, 0, 0, 4]);
 
         testNewFile.addAll([1, 2, 3, 4]);
-        waveBuilder.appendFileContents(testNewFile);
-        expect(waveBuilder.fileBytes.getRange(44, 48), [1, 2, 3, 4]);
+        waveBuilder?.appendFileContents(testNewFile);
+        expect(waveBuilder?.fileBytes.getRange(44, 48), [1, 2, 3, 4]);
       });
 
       test('it appends all file contents if data string does not exist', () {
         var testNewFile = [1, 1, 1, 2];
-        waveBuilder.appendFileContents(testNewFile);
-        expect(waveBuilder.fileBytes.getRange(44, 48), [1, 1, 1, 2]);
+        waveBuilder?.appendFileContents(testNewFile);
+        expect(waveBuilder?.fileBytes.getRange(44, 48), [1, 1, 1, 2]);
       });
     });
 
@@ -103,13 +103,13 @@ void main() {
           var testNewFile = [1, 1, 1, 2];
           var byteRate = FREQUENCY * BIT_RATE ~/ 8;
           var silenceLength = byteRate * NUM_CHANNELS;
-          waveBuilder.appendFileContents(testNewFile);
-          waveBuilder.appendSilence(
+          waveBuilder?.appendFileContents(testNewFile);
+          waveBuilder?.appendSilence(
               1000, WaveBuilderSilenceType.EndOfLastSample);
-          expect(waveBuilder.fileBytes.getRange(44, 48), [1, 1, 1, 2]);
-          expect(waveBuilder.fileBytes[49], 0);
-          expect(waveBuilder.fileBytes[48 + silenceLength - 1], 0);
-          expect(waveBuilder.fileBytes.length, 48 + silenceLength);
+          expect(waveBuilder?.fileBytes.getRange(44, 48), [1, 1, 1, 2]);
+          expect(waveBuilder?.fileBytes[49], 0);
+          expect(waveBuilder?.fileBytes[48 + silenceLength - 1], 0);
+          expect(waveBuilder?.fileBytes.length, 48 + silenceLength);
         });
       });
 
@@ -118,13 +118,13 @@ void main() {
           var testNewFile = [1, 1, 1, 2];
           var byteRate = FREQUENCY * BIT_RATE ~/ 8;
           var silenceLength = byteRate * NUM_CHANNELS;
-          waveBuilder.appendFileContents(testNewFile);
-          waveBuilder.appendSilence(
+          waveBuilder?.appendFileContents(testNewFile);
+          waveBuilder?.appendSilence(
               1000, WaveBuilderSilenceType.BeginningOfLastSample);
-          expect(waveBuilder.fileBytes.getRange(44, 48), [1, 1, 1, 2]);
-          expect(waveBuilder.fileBytes[49], 0);
-          expect(waveBuilder.fileBytes[48 + silenceLength - 4 - 1], 0);
-          expect(waveBuilder.fileBytes.length, 48 + silenceLength - 4);
+          expect(waveBuilder?.fileBytes.getRange(44, 48), [1, 1, 1, 2]);
+          expect(waveBuilder?.fileBytes[49], 0);
+          expect(waveBuilder?.fileBytes[48 + silenceLength - 4 - 1], 0);
+          expect(waveBuilder?.fileBytes.length, 48 + silenceLength - 4);
         });
         test(
             'it truncates last sample appropriately if silence is less than last sample size',
@@ -132,12 +132,12 @@ void main() {
           var byteRate = FREQUENCY * BIT_RATE ~/ 8;
           var silenceLength = byteRate * NUM_CHANNELS;
           var testNewFile = List<int>.filled(silenceLength + 4, 1);
-          waveBuilder.appendFileContents(testNewFile);
-          waveBuilder.appendSilence(
+          waveBuilder?.appendFileContents(testNewFile);
+          waveBuilder?.appendSilence(
               1000, WaveBuilderSilenceType.BeginningOfLastSample);
-          expect(waveBuilder.fileBytes.length, 44 + silenceLength);
-          expect(waveBuilder.fileBytes[48 + 1], 1);
-          expect(waveBuilder.fileBytes[testNewFile.length - 1], 1);
+          expect(waveBuilder?.fileBytes.length, 44 + silenceLength);
+          expect(waveBuilder?.fileBytes[48 + 1], 1);
+          expect(waveBuilder?.fileBytes[testNewFile.length - 1], 1);
         });
       });
     });
@@ -145,13 +145,13 @@ void main() {
     group('#finalize', () {
       test('it updates riff chunk size', () {
         // finalize is called for every fileBytes getter
-        waveBuilder.appendFileContents(<int>[1, 2, 3, 4]);
-        expect(waveBuilder.fileBytes[RIFF_CHUNK_SIZE_INDEX], 40);
+        waveBuilder?.appendFileContents(<int>[1, 2, 3, 4]);
+        expect(waveBuilder?.fileBytes[RIFF_CHUNK_SIZE_INDEX], 40);
       });
 
       test('it updates data chunk size', () {
-        waveBuilder.appendFileContents(<int>[1, 2, 3, 4]);
-        expect(waveBuilder.fileBytes[40], 4);
+        waveBuilder?.appendFileContents(<int>[1, 2, 3, 4]);
+        expect(waveBuilder?.fileBytes[40], 4);
       });
     });
 
@@ -165,7 +165,7 @@ void main() {
 
         testNewFile.addAll([1, 2, 3, 4]);
 
-        expect(waveBuilder.getDataChunk(testNewFile), [1, 2, 3, 4]);
+        expect(waveBuilder?.getDataChunk(testNewFile), [1, 2, 3, 4]);
       });
     });
   });
