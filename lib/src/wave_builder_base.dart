@@ -14,7 +14,7 @@ class WaveBuilder {
   static const int AUDIO_FORMAT = 1;
   static const int BYTE_SIZE = 8;
 
-  int _lastSampleSize;
+  int _lastSampleSize = 0;
 
   /// Finalizes the header sizes and returns bytes
   List<int> get fileBytes {
@@ -22,21 +22,19 @@ class WaveBuilder {
     return _outputBytes;
   }
 
-  List<int> _outputBytes;
+  List<int> _outputBytes = [];
   final Utf8Encoder _utf8encoder = Utf8Encoder();
 
-  int _dataChunkSizeIndex;
+  int _dataChunkSizeIndex = 0;
 
-  int _bitRate;
-  int _frequency;
-  int _numChannels;
+  int bitRate;
+  int frequency;
+  int _numChannels = 2;
 
   /// Construct a wave builder.
   /// Supply audio file properties.
-  WaveBuilder({int bitRate = 16, int frequency = 44100, bool stereo = true}) {
+  WaveBuilder({this.bitRate = 16, this.frequency = 44100, bool stereo = true}) {
     _outputBytes = <int>[];
-    _bitRate = bitRate;
-    _frequency = frequency;
     _numChannels = stereo ? 2 : 1;
     _initializeWave();
   }
@@ -51,9 +49,9 @@ class WaveBuilder {
   }
 
   void _createFormatChunk() {
-    var byteRate = _frequency * _numChannels * _bitRate ~/ BYTE_SIZE,
-        blockAlign = _numChannels * _bitRate ~/ 8,
-        bitsPerSample = _bitRate;
+    var byteRate = frequency * _numChannels * bitRate ~/ BYTE_SIZE,
+        blockAlign = _numChannels * bitRate ~/ 8,
+        bitsPerSample = bitRate;
     _outputBytes.addAll(_utf8encoder.convert('fmt '));
     _outputBytes.addAll(
         ByteUtils.numberAsByteList(SUB_CHUNK_SIZE, 4, bigEndian: false));
@@ -62,7 +60,7 @@ class WaveBuilder {
     _outputBytes
         .addAll(ByteUtils.numberAsByteList(_numChannels, 2, bigEndian: false));
     _outputBytes
-        .addAll(ByteUtils.numberAsByteList(_frequency, 4, bigEndian: false));
+        .addAll(ByteUtils.numberAsByteList(frequency, 4, bigEndian: false));
     _outputBytes
         .addAll(ByteUtils.numberAsByteList(byteRate, 4, bigEndian: false));
     _outputBytes
@@ -105,7 +103,7 @@ class WaveBuilder {
   /// [silenceType] determines whether we start the counter for silence
   /// from the beginning of the last sample or the end.
   void appendSilence(int msLength, WaveBuilderSilenceType silenceType) {
-    var byteRate = _frequency * _bitRate ~/ 8;
+    var byteRate = frequency * bitRate ~/ 8;
     var length = (msLength * byteRate ~/ 1000) * _numChannels;
     if (silenceType == WaveBuilderSilenceType.BeginningOfLastSample) {
       if (length > _lastSampleSize) {
