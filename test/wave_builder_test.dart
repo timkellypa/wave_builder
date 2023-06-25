@@ -16,7 +16,7 @@ const int NUM_CHANNELS = 2;
 
 void main() {
   group('WaveBuilder', () {
-    WaveBuilder waveBuilder = WaveBuilder();
+    var waveBuilder = WaveBuilder();
     setUp(() {
       waveBuilder = WaveBuilder();
     });
