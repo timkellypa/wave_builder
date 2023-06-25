@@ -16,13 +16,9 @@ const int NUM_CHANNELS = 2;
 
 void main() {
   group('WaveBuilder', () {
-    WaveBuilder waveBuilder;
+    WaveBuilder waveBuilder = WaveBuilder();
     setUp(() {
       waveBuilder = WaveBuilder();
-    });
-
-    tearDown(() {
-      waveBuilder = null;
     });
 
     group('#constructor', () {

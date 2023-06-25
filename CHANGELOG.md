@@ -21,3 +21,7 @@
 
 - Optimizations to adding files.
 - Supports finding the data chunk first, to prevent repeating the iteration many times.
+
+## 1.0.5
+
+- Increase minimum SDK to allow on more recent dart versions (null safety)
